@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='animations.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-shield-halved"></i>
+                    <div class="logo-text">
+                        <h1>Phishing Detection System</h1>
+                        <p>Powered by Hybrid Ensemble AI (Transformer + Heuristic)</p>
+                        <div class="hybrid-badge">
+                            <i class="fas fa-layer-group"></i> Hybrid Mode Active
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="system-status">
+                    <span class="status-label">System Status</span>
+                    <div class="status-indicators">
+                        <div class="status-item">
+                            <div class="status-dot online"></div>
+                            <span>Backend API</span>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-dot online"></div>
+                            <span>DL Model</span>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-dot online"></div>
+                            <span>Database</span>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-dot online"></div>
+                            <span>External APIs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="main-grid">
+            <!-- Left Column -->
+            <div class="left-column">
+
+
+                <!-- Scan History Panel -->
+                <section class="history-panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-history"></i> Recent Scans</h3>
+                        <button class="refresh-btn" onclick="loadHistory()">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+
+                    <div class="history-list" id="scanHistory">
+                        <!-- History items will be populated here -->
+                        <div class="history-empty">
+                            <i class="fas fa-clipboard-list"></i>
+                            <p>No scans performed yet</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Instant Analysis Panel -->
+                <section class="analysis-panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-search"></i> Instant Analysis</h3>
+                    </div>
+
+                    <div class="analysis-content">
+                        <div class="input-section" id="inputSection">
+                            <div class="scanning-overlay"></div>
+                            <div class="input-tabs">
+                                <button class="tab-btn active" data-type="url" onclick="switchAnalysisTab('url')">
+                                    <i class="fas fa-link"></i>
+                                    URL
+                                </button>
+                                <button class="tab-btn" data-type="email" onclick="switchAnalysisTab('email')">
+                                    <i class="fas fa-envelope"></i>
+                                    Email
+                                </button>
+                            </div>
+
+                            <!-- URL Analysis -->
+                            <div id="url-analysis" class="analysis-tab active">
+                                <div class="input-group">
+                                    <input type="text" id="urlInput" placeholder="https://example.com/page"
+                                        class="analysis-input">
+                                </div>
+                            </div>
+
+                            <!-- Email Analysis -->
+                            <div id="email-analysis" class="analysis-tab">
+                                <div class="input-group">
+                                    <input type="text" id="emailFrom" placeholder="From: sender@example.com"
+                                        class="analysis-input">
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" id="emailSubject" placeholder="Subject: Email subject"
+                                        class="analysis-input">
+                                </div>
+                                <div class="input-group">
+                                    <textarea id="emailContent" placeholder="Email content..." class="analysis-textarea"
+                                        rows="3"></textarea>
+                                </div>
+                            </div>
+
+                            <button id="analyzeBtn" class="analyze-btn" onclick="startAnalysis()">
+                                <span id="analyzeBtnText">
+                                    <i class="fas fa-play"></i>
+                                    Analyze
+                                </span>
+                                <div id="analyzeSpinner" class="spinner" style="display: none;"></div>
+                            </button>
+                        </div>
+
+                        <!-- Analysis Progress -->
+                        <div id="analysisProgress" class="analysis-progress" style="display: none;">
+                            <div class="progress-header">
+                                <span>Analyzing...</span>
+                            </div>
+                            <div class="progress-pipeline">
+                                <div class="pipeline-step active" data-step="preprocessing">
+                                    <div class="step-icon"><i class="fas fa-cogs"></i></div>
+                                    <span>Data Preprocessing</span>
+                                </div>
+                                <div class="pipeline-arrow">→</div>
+                                <div class="pipeline-step" data-step="tokenization">
+                                    <div class="step-icon"><i class="fas fa-cut"></i></div>
+                                    <span>Tokenization</span>
+                                </div>
+                                <div class="pipeline-arrow">→</div>
+                                <div class="pipeline-step" data-step="embeddings">
+                                    <div class="step-icon"><i class="fas fa-vector-square"></i></div>
+                                    <span>Word Embeddings</span>
+                                </div>
+                                <div class="pipeline-arrow">→</div>
+                                <div class="pipeline-step" data-step="attention">
+                                    <div class="step-icon"><i class="fas fa-brain"></i></div>
+                                    <span>Attention Mechanism</span>
+                                </div>
+                                <div class="pipeline-arrow">→</div>
+
+                                <div class="pipeline-step" data-step="classification">
+                                    <div class="step-icon"><i class="fas fa-chart-bar"></i></div>
+                                    <span>Classification</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <!-- Multihead Attention Visualization -->
+                        <div id="attentionViz" class="attention-visualization" style="display: none;">
+                            <div class="viz-header">
+                                <h4><i class="fas fa-eye"></i> Multihead Attention Visualization</h4>
+                                <div class="viz-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Hover over tokens to see attention weights. Darker colors indicate higher
+                                        attention.</span>
+                                </div>
+                            </div>
+
+                            <div class="attention-tokens" id="attentionTokens">
+                                <!-- Tokens will be populated dynamically -->
+                            </div>
+
+                            <div class="attention-heads">
+                                <h5>Active Attention Heads</h5>
+                                <div class="heads-grid" id="attentionHeadsGrid">
+                                    <!-- Heads will be populated dynamically if available -->
+                                    <div class="no-heads-message"
+                                        style="grid-column: 1/-1; text-align: center; color: #666; padding: 10px;">
+                                        <em>Detailed attention patterns not available for this input.</em>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="attention-matrix">
+                                <h5>Attention Weight Matrix</h5>
+                                <div class="viz-info" style="margin-bottom: 10px; font-size: 0.75rem;">
+                                    <i class="fas fa-project-diagram"></i>
+                                    Displays token-to-token relationship strength.
+                                </div>
+                                <div class="matrix-container">
+                                    <canvas id="attentionMatrix" width="300" height="120"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analysis Results -->
+                        <div id="analysisResults" class="analysis-results" style="display: none;">
+                            <div class="result-header">
+                                <div class="result-status" id="resultStatus">
+                                    <div class="status-icon" id="statusIcon"></div>
+                                    <div class="status-text">
+                                        <h4 id="resultTitle"></h4>
+                                        <p id="resultDescription"></p>
+                                    </div>
+                                </div>
+                                <div class="confidence-score" id="confidenceScore"></div>
+                            </div>
+
+                            <!-- Decision Engine & WHOIS Panel -->
+                            <div id="decisionEngineResults" class="decision-engine-panel"
+                                style="display: none; margin-bottom: 20px; padding: 15px; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);">
+                                <h4 style="margin-top: 0; color: var(--text-primary);"><i class="fas fa-brain"></i>
+                                    Security Decision Engine</h4>
+
+                                <div class="decision-grid"
+                                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+                                    <!-- Left: Recommendation -->
+                                    <div class="recommendation-box"
+                                        style="padding: 10px; border-radius: 6px; background: rgba(255,255,255,0.05);">
+                                        <h5 style="margin: 0 0 5px 0; font-size: 0.9rem; color: var(--text-secondary);">
+                                            Safety Recommendation</h5>
+                                        <div id="finalRecommendation"
+                                            style="font-size: 1.2rem; font-weight: bold; color: var(--text-primary);">
+                                        </div>
+                                        <div id="decisionReason"
+                                            style="margin-top: 5px; font-size: 0.85rem; color: var(--text-secondary);">
+                                        </div>
+                                    </div>
+
+                                    <!-- Right: Domain Intel -->
+                                    <div class="domain-intel-box" id="domainIntelBox">
+                                        <h5 class="domain-intel-title">
+                                            <i class="fas fa-globe"></i> Domain Intelligence
+                                        </h5>
+                                        <div id="whoisInfo" class="domain-intel-content">
+                                            <!-- Valid for URL only -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- NEW: Website Purpose Section -->
+                                <div id="websitePurposePanel"
+                                    style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                                    <h5 style="margin: 0 0 10px 0; color: var(--cyan-primary);"><i
+                                            class="fas fa-info-circle"></i> Website Profile & Purpose Analysis</h5>
+
+                                    <div
+                                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px;">
+                                        <div
+                                            style="padding: 10px; border-radius: 6px; background: rgba(0, 217, 255, 0.05); border: 1px solid rgba(0, 217, 255, 0.2); text-align: center;">
+                                            <span
+                                                style="display: block; font-size: 0.65rem; color: var(--text-secondary); margin-bottom: 3px; text-transform: uppercase;">Category</span>
+                                            <span id="websiteCategory"
+                                                style="font-weight: bold; color: var(--cyan-primary); font-size: 0.85rem;">Scanning...</span>
+                                        </div>
+                                        <div
+                                            style="padding: 10px; border-radius: 6px; background: rgba(162, 51, 255, 0.05); border: 1px solid rgba(162, 51, 255, 0.2); text-align: center;">
+                                            <span
+                                                style="display: block; font-size: 0.65rem; color: var(--text-secondary); margin-bottom: 3px; text-transform: uppercase;">Design
+                                                Intent</span>
+                                            <span id="designIntent"
+                                                style="font-weight: bold; color: #a233ff; font-size: 0.85rem;">Analyzing...</span>
+                                        </div>
+                                        <div
+                                            style="padding: 10px; border-radius: 6px; background: rgba(46, 213, 115, 0.05); border: 1px solid rgba(46, 213, 115, 0.2); text-align: center;">
+                                            <span
+                                                style="display: block; font-size: 0.65rem; color: var(--text-secondary); margin-bottom: 3px; text-transform: uppercase;">Visual
+                                                Trust</span>
+                                            <span id="visualTrust"
+                                                style="font-weight: bold; color: #2ed573; font-size: 0.85rem;">Verifying...</span>
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        style="padding: 12px; border-radius: 6px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05);">
+                                        <span
+                                            style="display: block; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 5px;">Detected
+                                            Purpose & Site Utility</span>
+                                        <div id="websitePurpose"
+                                            style="font-size: 0.84rem; color: var(--text-primary); line-height: 1.5; opacity: 0.9;">
+                                            The system is currently scanning the page hierarchy, metadata, and design
+                                            structure to understand the site's primary utility...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Explainable AI Insights -->
+                            <div class="explainability-section">
+                                <div class="section-title">
+                                    <i class="fas fa-lightbulb"></i> Explainable AI Insights
+                                </div>
+
+                                <div class="scores-grid">
+                                    <div class="score-card">
+                                        <div class="score-label">Transformer Model</div>
+                                        <div class="score-bar-container">
+                                            <div class="score-bar" id="transformerBar" style="width: 0%"></div>
+                                        </div>
+                                        <div class="score-value" id="transformerScore">0%</div>
+                                    </div>
+
+                                    <div class="score-card">
+                                        <div class="score-label">Rule-Based Logic</div>
+                                        <div class="score-bar-container">
+                                            <div class="score-bar" id="ruleBar" style="width: 0%"></div>
+                                        </div>
+                                        <div class="score-value" id="ruleScore">0%</div>
+                                    </div>
+
+                                    <div class="score-card">
+                                        <div class="score-label">Behavior Analysis</div>
+                                        <div class="score-bar-container">
+                                            <div class="score-bar" id="behaviorBar" style="width: 0%"></div>
+                                        </div>
+                                        <div class="score-value" id="behaviorScore">0%</div>
+                                    </div>
+
+                                    <div class="score-card highlight">
+                                        <div class="score-label">Final Hybrid Score</div>
+                                        <div class="score-bar-container">
+                                            <div class="score-bar" id="finalBar" style="width: 0%"></div>
+                                        </div>
+                                        <div class="score-value" id="finalScore">0%</div>
+                                    </div>
+                                </div>
+
+                                <div class="suspicious-words-section">
+                                    <h6><i class="fas fa-search"></i> Suspicious Triggers Detected</h6>
+                                    <div id="suspiciousWordsList" class="suspicious-tags">
+                                        <!-- Words will be populated here -->
+                                        <span class="no-words">No specific suspicious keywords detected.</span>
+                                    </div>
+                                </div>
+
+                                <div class="suspicious-words-section" id="behaviorFindingsSection"
+                                    style="display: none; margin-top: 15px;">
+                                    <h6><i class="fas fa-spider"></i> Behavior Analysis Findings</h6>
+                                    <div id="behaviorFindingsList" class="suspicious-tags">
+                                        <!-- Findings will be populated here -->
+                                    </div>
+                                </div>
+
+                                <div class="suspicious-words-section" id="legitimacySignalsSection"
+                                    style="display: none; margin-top: 15px;">
+                                    <h6><i class="fas fa-certificate"></i> Verified Legitimacy Signals</h6>
+                                    <div id="legitimacySignalsList" class="suspicious-tags">
+                                        <!-- Signals will be populated here -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="result-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Threat Level:</span>
+                                    <span class="detail-value" id="threatLevel"></span>
+                                </div>
+                                <div class="detail-item action-item">
+                                    <button class="report-btn" id="downloadReportBtn" onclick="downloadReport()">
+                                        <i class="fas fa-file-pdf"></i> Download Report
+                                    </button>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Analysis Time:</span>
+                                    <span class="detail-value" id="analysisTime"></span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Model Version:</span>
+                                    <span class="detail-value">v2.5.1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <!-- Performance Metrics -->
+                <section class="metrics-panel">
+                    <div class="panel-header">
+                        <h3>Performance Metrics</h3>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card threat">
+                            <div class="metric-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-label">Threats Detected Today</div>
+                                <div class="metric-value">1,247</div>
+                                <div class="metric-change positive">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>+12%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card accuracy">
+                            <div class="metric-icon">
+                                <i class="fas fa-shield-check"></i>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-label">Detection Accuracy</div>
+                                <div class="metric-value">98.5%</div>
+                                <div class="metric-change positive">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>+2.3%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card false-positive">
+                            <div class="metric-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-label">False Positives</div>
+                                <div class="metric-value">23</div>
+                                <div class="metric-change negative">
+                                    <i class="fas fa-arrow-down"></i>
+                                    <span>-15%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card sources">
+                            <div class="metric-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-label">Data Sources Active</div>
+                                <div class="metric-value">42</div>
+                                <div class="metric-change stable">
+                                    <span>stable</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Common Threat Patterns -->
+                <section class="patterns-panel">
+                    <div class="panel-header">
+                        <h3>Common Threat Patterns</h3>
+                    </div>
+
+                    <div class="patterns-list">
+                        <div class="pattern-item">
+                            <div class="pattern-bar">
+                                <div class="pattern-label">Typosquatting</div>
+                                <div class="pattern-count">432</div>
+                                <div class="pattern-percentage">35%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 35%"></div>
+                            </div>
+                        </div>
+
+                        <div class="pattern-item">
+                            <div class="pattern-bar">
+                                <div class="pattern-label">Brand Impersonation</div>
+                                <div class="pattern-count">381</div>
+                                <div class="pattern-percentage">31%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 31%"></div>
+                            </div>
+                        </div>
+
+                        <div class="pattern-item">
+                            <div class="pattern-bar">
+                                <div class="pattern-label">Urgency Tactics</div>
+                                <div class="pattern-count">256</div>
+                                <div class="pattern-percentage">20%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 20%"></div>
+                            </div>
+                        </div>
+
+                        <div class="pattern-item">
+                            <div class="pattern-bar">
+                                <div class="pattern-label">URL Obfuscation</div>
+                                <div class="pattern-count">178</div>
+                                <div class="pattern-percentage">14%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 14%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Model Performance Details -->
+                <section class="model-panel">
+                    <div class="panel-header">
+                        <h3>Model Performance</h3>
+                    </div>
+
+                    <div class="model-stats">
+                        <div class="stat-row">
+                            <span class="stat-label">Inference Time</span>
+                            <span class="stat-value cyan">47ms</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Active Attention Heads</span>
+                            <span class="stat-value cyan">8/8</span>
+                        </div>
+
+                        <div class="stat-row">
+                            <span class="stat-label">Model Version</span>
+                            <span class="stat-value cyan">v2.5.1</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Training Accuracy</span>
+                            <span class="stat-value green">99.2%</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- System Architecture Button -->
+                <section class="architecture-panel">
+                    <button class="architecture-btn" onclick="showArchitecture()">
+                        <i class="fas fa-sitemap"></i>
+                        <span>View System Architecture</span>
+                    </button>
+                </section>
+            </div>
+        </main>
+
+        <!-- Architecture Modal -->
+        <div id="architectureModal" class="modal" style="display: none;">
+            <div class="modal-content architecture-modal">
+                <div class="modal-header">
+                    <h3><i class="fas fa-sitemap"></i> System Architecture</h3>
+                    <button class="modal-close" onclick="closeArchitecture()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="architecture-content">
+                    <div class="architecture-diagram">
+                        <!-- Input Layer -->
+                        <div class="arch-layer input-layer">
+                            <h4>1. Universal Input Layer</h4>
+                            <div class="arch-components">
+                                <div class="arch-component">
+                                    <i class="fas fa-link"></i>
+                                    <span>URL Data</span>
+                                </div>
+                                <div class="arch-component">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>Email Blobs</span>
+                                </div>
+                                <div class="arch-component">
+                                    <i class="fas fa-file-code"></i>
+                                    <span>Metadata</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="arch-arrow">↓</div>
+
+                        <!-- Parallel Processing Layers -->
+                        <div
+                            style="display: flex; gap: 20px; width: 100%; max-width: 900px; justify-content: center; align-items: stretch;">
+
+                            <!-- AI Branch -->
+                            <div class="arch-layer" style="flex: 1; border-color: var(--cyan-primary);">
+                                <h4>Branch A: Deep Learning</h4>
+                                <div class="arch-components" style="flex-direction: column; gap: 10px;">
+                                    <div class="arch-component" style="width: 100%;">
+                                        <i class="fas fa-brain"></i>
+                                        <span>Multi-Head Attention</span>
+                                    </div>
+                                    <div class="arch-component" style="width: 100%;">
+                                        <i class="fas fa-project-diagram"></i>
+                                        <span>Transformer Encoder</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Intel Branch -->
+                            <div class="arch-layer" style="flex: 1; border-color: #a233ff;">
+                                <h4>Branch B: Intelligence</h4>
+                                <div class="arch-components" style="flex-direction: column; gap: 10px;">
+                                    <div class="arch-component" style="width: 100%;">
+                                        <i class="fas fa-globe"></i>
+                                        <span>WHOIS Analysis</span>
+                                    </div>
+                                    <div class="arch-component" style="width: 100%;">
+                                        <i class="fas fa-history"></i>
+                                        <span>Domain Age Check</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Behavioral Branch -->
+                            <div class="arch-layer" style="flex: 1; border-color: #2ed573;">
+                                <h4>Branch C: Behavioral</h4>
+                                <div class="arch-components" style="flex-direction: column; gap: 10px;">
+                                    <div class="arch-component" style="width: 100%;">
+                                        <i class="fas fa-spider"></i>
+                                        <span>Selenium Crawler</span>
+                                    </div>
+                                    <div class="arch-component" style="width: 100%;">
+                                        <i class="fas fa-fingerprint"></i>
+                                        <span>Live Site Audit</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="arch-arrow">↓</div>
+
+                        <!-- Hybrid Engine -->
+                        <div class="arch-layer processing-layer"
+                            style="border-width: 3px; border-style: dashed; background: rgba(0, 217, 255, 0.05);">
+                            <h4>2. Hybrid Decision Engine (Weighted Ensemble)</h4>
+                            <div class="arch-components">
+                                <div class="arch-component">
+                                    <i class="fas fa-balance-scale"></i>
+                                    <span>Score Aggregator</span>
+                                </div>
+                                <div class="arch-component">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Legitimacy Overrides</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="arch-arrow">↓</div>
+
+                        <!-- Output Layer -->
+                        <div class="arch-layer classification-layer">
+                            <h4>3. Outcome Generation</h4>
+                            <div class="arch-components">
+                                <div class="arch-component safe">
+                                    <i class="fas fa-shield-check"></i>
+                                    <span>Legitimate</span>
+                                </div>
+                                <div class="arch-component" style="color: var(--orange-primary);">
+                                    <i class="fas fa-question-circle" style="color: var(--orange-primary);"></i>
+                                    <span>Suspicious</span>
+                                </div>
+                                <div class="arch-component dangerous">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>Phishing</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="architecture-details">
+                        <h4>Technical Specifications</h4>
+                        <div class="tech-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Core Engine:</span>
+                                <span class="spec-value">Hybrid Ensemble (AI + WHOIS + Crawler)</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">DL Architecture:</span>
+                                <span class="spec-value">Multihead Self-Attention Transformer</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Crawler Engine:</span>
+                                <span class="spec-value">Selenium (Headless Chrome)</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Intel Source:</span>
+                                <span class="spec-value">Global WHOIS Registry</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Scoring Logic:</span>
+                                <span class="spec-value">Weighted (60% AI / 20% Intel / 20% Behavior)</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Deployment:</span>
+                                <span class="spec-value">Flask REST API + Chrome Extension</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
