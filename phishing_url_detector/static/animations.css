@@ -20,6 +20,12 @@
 }
 
 /* 2. Cyber Scanning Effect for Input */
+/* CRITICAL: position:relative keeps the overlay inside input-section only */
+.input-section {
+    position: relative;
+    overflow: hidden;
+}
+
 .scanning-overlay {
     position: absolute;
     top: 0;
@@ -31,8 +37,8 @@
             rgba(0, 217, 255, 0.2) 50%,
             transparent 100%);
     opacity: 0;
-    pointer-events: none;
-    z-index: 10;
+    pointer-events: none !important;
+    z-index: 1;
 }
 
 .scanning .scanning-overlay {
