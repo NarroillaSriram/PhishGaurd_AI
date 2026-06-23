@@ -3,7 +3,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete' && tab.url && tab.url.startsWith('http')) {
 
         // Call Flask API
-        fetch(`https://phishgaurd-ai.onrender.com/api/check_url?url=${encodeURIComponent(tab.url)}`)
+        fetch(`http://127.0.0.1:5000/api/check_url?url=${encodeURIComponent(tab.url)}`)
             .then(response => response.json())
             .then(data => {
                 if (data.prediction === 'Phishing') {

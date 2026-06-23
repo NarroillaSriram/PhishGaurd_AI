@@ -223,7 +223,8 @@
                                 <h4 style="margin-top: 0; color: var(--text-primary);"><i class="fas fa-brain"></i>
                                     Security Decision Engine</h4>
 
-                                <div class="decision-grid decision-grid-cols">
+                                <div class="decision-grid"
+                                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
                                     <!-- Left: Recommendation -->
                                     <div class="recommendation-box"
                                         style="padding: 10px; border-radius: 6px; background: rgba(255,255,255,0.05);">
@@ -254,7 +255,8 @@
                                     <h5 style="margin: 0 0 10px 0; color: var(--cyan-primary);"><i
                                             class="fas fa-info-circle"></i> Website Profile & Purpose Analysis</h5>
 
-                                    <div class="purpose-cards-grid">
+                                    <div
+                                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px;">
                                         <div
                                             style="padding: 10px; border-radius: 6px; background: rgba(0, 217, 255, 0.05); border: 1px solid rgba(0, 217, 255, 0.2); text-align: center;">
                                             <span
@@ -574,13 +576,14 @@
                         <div class="arch-arrow">↓</div>
 
                         <!-- Parallel Processing Layers -->
-                        <div class="arch-branches-row">
+                        <div
+                            style="display: flex; gap: 20px; width: 100%; max-width: 900px; justify-content: center; align-items: stretch;">
 
                             <!-- AI Branch -->
-                            <div class="arch-layer arch-branch-ai">
+                            <div class="arch-layer" style="flex: 1; border-color: var(--cyan-primary);">
                                 <h4>Branch A: Deep Learning</h4>
-                                <div class="arch-components arch-components-vertical">
-                                    <div class="arch-component">
+                                <div class="arch-components" style="flex-direction: column; gap: 10px;">
+                                    <div class="arch-component" style="width: 100%;">
                                         <i class="fas fa-brain"></i>
                                         <span>Multi-Head Attention</span>
                                     </div>
@@ -592,9 +595,9 @@
                             </div>
 
                             <!-- Intel Branch -->
-                            <div class="arch-layer arch-branch-intel">
+                            <div class="arch-layer" style="flex: 1; border-color: #a233ff;">
                                 <h4>Branch B: Intelligence</h4>
-                                <div class="arch-components arch-components-vertical">
+                                <div class="arch-components" style="flex-direction: column; gap: 10px;">
                                     <div class="arch-component" style="width: 100%;">
                                         <i class="fas fa-globe"></i>
                                         <span>WHOIS Analysis</span>
@@ -607,9 +610,9 @@
                             </div>
 
                             <!-- Behavioral Branch -->
-                            <div class="arch-layer arch-branch-behavioral">
+                            <div class="arch-layer" style="flex: 1; border-color: #2ed573;">
                                 <h4>Branch C: Behavioral</h4>
-                                <div class="arch-components arch-components-vertical">
+                                <div class="arch-components" style="flex-direction: column; gap: 10px;">
                                     <div class="arch-component" style="width: 100%;">
                                         <i class="fas fa-spider"></i>
                                         <span>Selenium Crawler</span>

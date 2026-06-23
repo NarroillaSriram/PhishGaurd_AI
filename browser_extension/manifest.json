@@ -5,11 +5,9 @@
   "description": "Real-time phishing detection using AI.",
   "permissions": [
     "activeTab",
-    "scripting",
-    "tabs"
+    "scripting"
   ],
   "host_permissions": [
-    "https://phishgaurd-ai.onrender.com/*",
     "http://127.0.0.1:5000/*"
   ],
   "action": {

@@ -14,7 +14,7 @@ function checkCurrentTab() {
         const currentUrl = tabs[0].url;
 
         // Call Flask API
-        fetch(`https://phishgaurd-ai.onrender.com/api/check_url?url=${encodeURIComponent(currentUrl)}`)
+        fetch(`http://127.0.0.1:5000/api/check_url?url=${encodeURIComponent(currentUrl)}`)
             .then(response => response.json())
             .then(data => {
                 if (data.prediction === 'Phishing') {
