@@ -1,1 +1,2 @@
-*.h5 filter=lfs diff=lfs merge=lfs -text
+# Git LFS tracking removed — .h5 files are now regular git files
+# This allows Render.com to access model files during deployment

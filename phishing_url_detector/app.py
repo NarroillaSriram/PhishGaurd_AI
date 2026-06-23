@@ -1,11 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 from model_utils import predict_url, predict_email, predict_smart, MultiHeadSelfAttention
-from model_utils import predict_url, predict_email, predict_smart, MultiHeadSelfAttention
-from crawler import analyze_webpage
 from domain_info import get_domain_info
 from flask_cors import CORS
 import tensorflow as tf
-import joblib
 import joblib
 import os
 import datetime
@@ -15,6 +12,12 @@ from fpdf import FPDF
 # Define base directory for absolute paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(BASE_DIR, 'models')
+
+# Production mode disables Selenium/Chrome crawler (not available on Render free tier)
+PRODUCTION = os.environ.get('PRODUCTION', 'false').lower() == 'true'
+
+if not PRODUCTION:
+    from crawler import analyze_webpage
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for Chrome Extension
@@ -167,22 +170,28 @@ def predict():
                 domain_score = 0
             
             # STEP 3: Webpage Behavior Crawler (The "Visit" component)
-            try:
-                print(f"🕷️ Running Crawler Analysis (SITE VISIT) on: {input_text}")
-                # Ensure URL has scheme for Selenium
-                crawler_url = input_text
-                if not crawler_url.startswith(('http://', 'https://')):
-                    crawler_url = 'http://' + crawler_url
-                    
-                behavior_result = analyze_webpage(crawler_url)
-                behavior_score = behavior_result.get('behavior_score', 0)
-                behavior_flags = behavior_result.get('flags', [])
-                legitimacy_signals = behavior_result.get('legitimacy_signals', [])
-            except Exception as e:
-                print(f"⚠️ Crawler failed: {e}")
+            # Disabled in PRODUCTION mode (Render free tier has no Chrome/Selenium)
+            if not PRODUCTION:
+                try:
+                    print(f"🕷️ Running Crawler Analysis (SITE VISIT) on: {input_text}")
+                    crawler_url = input_text
+                    if not crawler_url.startswith(('http://', 'https://')):
+                        crawler_url = 'http://' + crawler_url
+                    behavior_result = analyze_webpage(crawler_url)
+                    behavior_score = behavior_result.get('behavior_score', 0)
+                    behavior_flags = behavior_result.get('flags', [])
+                    legitimacy_signals = behavior_result.get('legitimacy_signals', [])
+                except Exception as e:
+                    print(f"⚠️ Crawler failed: {e}")
+                    behavior_score = 0
+                    behavior_flags = [f"Crawler check failed: {str(e)}"]
+                    legitimacy_signals = []
+            else:
+                print("ℹ️ Crawler disabled in production mode.")
                 behavior_score = 0
-                behavior_flags = [f"Crawler check failed: {str(e)}"]
+                behavior_flags = ["Crawler analysis skipped in production (server-side visit not available)."]
                 legitimacy_signals = []
+                behavior_result = {'website_purpose': 'N/A', 'website_category': 'General', 'design_intent': 'N/A', 'suspicious_words': []}
             
             # --- FINAL HYBRID SCORING ---
             # Standard weights: 60% model + 20% domain + 20% behavior
@@ -328,8 +337,6 @@ def predict():
 def get_history():
     """Get scan history"""
     return jsonify(scan_history)
-
-
 
 @app.route('/download_report/<scan_id>')
 def download_report(scan_id):
@@ -608,24 +615,19 @@ def check_url_api():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# ============================================================
+# Load models at MODULE level so gunicorn workers get them.
+# This runs when 'app' is imported by gunicorn, not just __main__.
+# ============================================================
+print("🚀 Initializing PhishGuard AI...")
+if not load_model_components():
+    print("⚠️  Models not found or failed to load. Endpoints requiring models will return errors.")
+else:
+    print("🎉 All models loaded and ready!")
+
 if __name__ == '__main__':
-    print("🚀 Starting Multi-Modal Phishing Detection System...")
-    print("🔍 Supports both URL and Email analysis")
-    
-    # Load model components at startup
-    if not load_model_components():
-        print("\n⚠️  Models not found or failed to load!")
-        print("Please run the following command first:")
-        print("python train_model.py")
-        print("\nThen restart the application with:")
-        print("python app.py")
-        print("\n" + "="*50)
-        print("Starting server anyway (you can train models later)...")
-    else:
-        print("🎉 Models loaded successfully!")
-    
-    print("🌐 Starting Flask server...")
+    port = int(os.environ.get('PORT', 5000))
+    print(f"🌐 Starting Flask server on port {port}...")
     print("📱 Open http://localhost:5000 in your browser")
     print("="*50)
-    
-    app.run(debug=True, port=5000)
+    app.run(debug=False, host='0.0.0.0', port=port)

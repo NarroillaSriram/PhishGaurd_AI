@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: phishguard-ai
+    env: python
+    rootDir: phishing_url_detector
+    plan: free
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 300 --preload app:app
+    envVars:
+      - key: PRODUCTION
+        value: "true"
+      - key: PYTHON_VERSION
+        value: "3.10.14"
+      - key: PYTHONDONTWRITEBYTECODE
+        value: "1"
+      - key: PYTHONUNBUFFERED
+        value: "1"

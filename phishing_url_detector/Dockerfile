@@ -4,31 +4,28 @@ FROM python:3.10-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV PRODUCTION=true
 
-# Install Google Chrome and its dependencies for Selenium Crawler
+# Install system dependencies (NO Chrome — disabled in production)
 RUN apt-get update && apt-get install -y \
     wget \
-    gnupg \
-    unzip \
     curl \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' \
-    && apt-get update && apt-get install -y \
-    google-chrome-stable \
+    gnupg \
     && rm -rf /var/lib/apt/lists/*
 
 # Set work directory
 WORKDIR /app
 
-# Copy requirements and install
+# Copy requirements and install dependencies first (layer cache optimization)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
 COPY . .
 
-# Expose the API port
+# Expose the API port (Render overrides with $PORT env var)
 EXPOSE 5000
 
-# Run gunicorn to serve the Flask app
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+# Run gunicorn — use $PORT so Render can inject the correct port
+CMD gunicorn --bind 0.0.0.0:${PORT:-5000} --workers 1 --timeout 300 --preload app:app
