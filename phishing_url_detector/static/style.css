@@ -1682,8 +1682,49 @@ body {
 }
 
 /* ============================================================
+   CLASSES REPLACING INLINE STYLES (needed for mobile overrides)
+   Inline styles can't be overridden by media queries — these
+   class-based equivalents allow proper responsive control.
+   ============================================================ */
+
+/* Decision engine 2-column grid */
+.decision-grid-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* Website purpose 3-column cards */
+.purpose-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+/* Architecture branches flex row */
+.arch-branches-row {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.arch-branch-ai    { flex: 1; border-color: var(--cyan-primary); }
+.arch-branch-intel { flex: 1; border-color: #a233ff; }
+.arch-branch-behavioral { flex: 1; border-color: #2ed573; }
+
+.arch-components-vertical {
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ============================================================
    MOBILE RESPONSIVE STYLES
-   Breakpoints: 768px (tablet), 480px (phone)
+   Breakpoints: 1024px (tablet), 768px (mobile), 480px (small phone)
    ============================================================ */
 
 /* --- Tablet & below (≤ 1024px) --- */
@@ -1787,6 +1828,31 @@ body {
     .result-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .confidence-score {
+        align-self: flex-start;
+        font-size: 1.1rem;
+        padding: 0.5rem 1rem;
+    }
+
+    /* Decision grid: single column (replaces inline style) */
+    .decision-grid-cols {
+        grid-template-columns: 1fr;
+    }
+
+    /* Purpose cards: single column on mobile (replaces inline style) */
+    .purpose-cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Architecture branches: stack vertically (replaces inline style) */
+    .arch-branches-row {
+        flex-direction: column;
+        max-width: 100%;
+    }
+
         gap: 0.75rem;
     }
 
