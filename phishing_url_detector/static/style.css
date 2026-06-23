@@ -269,10 +269,13 @@ body {
     border: 2px solid var(--border-color);
     border-radius: 8px;
     color: var(--text-primary);
-    font-size: 0.9rem;
+    font-size: 1rem;              /* MUST be >=16px — iOS Safari zooms on smaller fonts */
     transition: border-color 0.2s;
-    position: relative;   /* sit above scanning overlay */
+    position: relative;
     z-index: 2;
+    touch-action: manipulation;   /* Prevents 300ms tap delay on Android */
+    -webkit-user-select: text;    /* Allows text input on iOS */
+    user-select: text;
 }
 
 .analysis-input:focus,

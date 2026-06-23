@@ -37,6 +37,7 @@
             rgba(0, 217, 255, 0.2) 50%,
             transparent 100%);
     opacity: 0;
+    display: none;           /* Hidden by default - JS shows it only when scanning */
     pointer-events: none !important;
     z-index: 0;
 }

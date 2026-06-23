@@ -94,7 +94,9 @@ async function runAnalysisPipeline(inputData, analysisType) {
 }
 
 function showAnalysisProgress() {
-    // Add scanning effect
+    // Show scanning overlay
+    const overlay = document.querySelector('#inputSection .scanning-overlay');
+    if (overlay) overlay.style.display = 'block';
     document.getElementById('inputSection').classList.add('scanning');
 
     document.getElementById('analysisProgress').style.display = 'block';
@@ -237,7 +239,9 @@ async function performActualAnalysis(inputData, analysisType) {
         btn.disabled = false;
         analysisInProgress = false;
 
-        // Remove scanning effect
+        // Hide scanning overlay completely (display:none, not just opacity:0)
+        const overlay = document.querySelector('#inputSection .scanning-overlay');
+        if (overlay) overlay.style.display = 'none';
         document.getElementById('inputSection').classList.remove('scanning');
     }
 }
