@@ -23,7 +23,7 @@
 /* CRITICAL: position:relative keeps the overlay inside input-section only */
 .input-section {
     position: relative;
-    overflow: hidden;
+    /* NO overflow:hidden — that clips inputs on mobile */
 }
 
 .scanning-overlay {
@@ -38,7 +38,7 @@
             transparent 100%);
     opacity: 0;
     pointer-events: none !important;
-    z-index: 1;
+    z-index: 0;
 }
 
 .scanning .scanning-overlay {

@@ -219,6 +219,8 @@ body {
     background: var(--bg-input);
     padding: 0.25rem;
     border-radius: 8px;
+    position: relative;
+    z-index: 2;
 }
 
 .tab-btn {
@@ -269,6 +271,8 @@ body {
     color: var(--text-primary);
     font-size: 0.9rem;
     transition: border-color 0.2s;
+    position: relative;   /* sit above scanning overlay */
+    z-index: 2;
 }
 
 .analysis-input:focus,
@@ -298,6 +302,8 @@ body {
     gap: 0.5rem;
     transition: all 0.2s;
     margin-top: 1rem;
+    position: relative;
+    z-index: 2;
 }
 
 .analyze-btn:hover {
